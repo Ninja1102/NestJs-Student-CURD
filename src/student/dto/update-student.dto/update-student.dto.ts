@@ -1,14 +1,13 @@
-import { IsEmail, IsInt, IsOptional, IsNotEmpty, Min, Max } from 'class-validator';
+import { IsEmail, IsInt, IsOptional, IsNotEmpty, Min, Max, isString, IsString } from 'class-validator';
 
 export class UpdateStudentDto {
   @IsOptional()
+  @IsString()
   @IsNotEmpty({ message: 'Name is required' })
   name: string;
   
   @IsOptional()
   @IsInt({ message: 'Age must be a number' })
-  @Min(7, { message: 'Minimum age is 7' })
-  @Max(25, { message: 'Maximum age is 25' })
   age: number;
   
   @IsOptional()
