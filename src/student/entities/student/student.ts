@@ -13,4 +13,11 @@ export class Student {
 
   @Column()
   email: string;
+
+  @Column()
+  course: string;
+
+  @Column()
+  grade: string;
+
 }
