@@ -14,11 +14,4 @@ export class UpdateStudentDto {
   @IsEmail({}, { message: 'Please enter a valid email address' })
   email: string;
 
-  @IsOptional()
-  @IsNotEmpty()
-  course: string;
-
-  @IsOptional()
-  @IsNotEmpty()
-  grade: string;
 }

@@ -11,10 +11,8 @@ export class CreateStudentDto {
   @IsEmail({}, { message: 'Please enter a valid email address' })
   email: string;
 
-  @IsNotEmpty()
-  course: string;
-
-  @IsNotEmpty()
-  grade: string;
+  courseIds: number[];
+  }
   
-}
+  
+
