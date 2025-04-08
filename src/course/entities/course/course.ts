@@ -19,7 +19,9 @@ export class Course {
   @Column()
   endDate: string;
 
-  @ManyToMany(() => Student, (student) => student.courses, { cascade: true })
-  @JoinTable() // this is important for ManyToMany
+  @ManyToMany(() => Student, (student) => student.courses)
+  @JoinTable()
   students: Student[];
+  
+  
 }

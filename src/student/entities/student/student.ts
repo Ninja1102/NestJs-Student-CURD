@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
+// student.entity.ts
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
 import { Course } from 'src/course/entities/course/course';
 
 @Entity()
@@ -15,7 +16,7 @@ export class Student {
   @Column()
   email: string;
 
-  @ManyToMany(() => Course, course => course.students, { cascade: true })
-  @JoinTable() // This adds a join table (student_courses)
+  @ManyToMany(() => Course, (course) => course.students)
   courses: Course[];
+  
 }

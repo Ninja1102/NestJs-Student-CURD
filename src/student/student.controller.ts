@@ -24,16 +24,15 @@ import { UpdateStudentDto } from './dto/update-student.dto/update-student.dto';
     findOne(@Param('id') id: string) {
       return this.studentService.findOne(+id);
     }
-  
+
     @Patch(':id')
-    @UsePipes(new ValidationPipe({ whitelist: true }))
-    update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
-      return this.studentService.update(+id, updateStudentDto);
+    update(@Param('id') id: string, @Body() updateDto: UpdateStudentDto) {
+      return this.studentService.update(+id, updateDto);
     }
-  
+    
     @Delete(':id')
     remove(@Param('id') id: string) {
       return this.studentService.remove(+id);
     }
-  }
+}
   

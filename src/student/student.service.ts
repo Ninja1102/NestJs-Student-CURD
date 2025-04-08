@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Student } from './entities/student/student';
 import { CreateStudentDto } from './dto/create-student.dto/create-student.dto';
 import { Course } from 'src/course/entities/course/course'; // ✅ Import Course
+import { UpdateStudentDto } from './dto/update-student.dto/update-student.dto';
 
 @Injectable()
 export class StudentService {
@@ -30,11 +31,33 @@ export class StudentService {
   }
   
 
-  update(id: number, data: Partial<Student>) {
-    return this.studentRepo.update(id, data);
-  }
+  
 
-  remove(id: number) {
+  async update(id: number, updateDto: UpdateStudentDto): Promise<Student> {
+    await this.studentRepo.update(id, updateDto);
+    const updatedStudent = await this.findOne(id);
+  
+    if (!updatedStudent) {
+      throw new NotFoundException(`Student with ID ${id} not found`);
+    }
+  
+    return updatedStudent;
+  }
+  
+  
+  async remove(id: number) {
+    const student = await this.studentRepo.findOne({
+      where: { id },
+      relations: ['courses'],
+    });
+  
+    if (student) {
+      // Remove relation to courses first
+      student.courses = [];
+      await this.studentRepo.save(student);
+    }
+  
     return this.studentRepo.delete(id);
   }
+  
 }
