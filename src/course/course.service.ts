@@ -4,6 +4,8 @@ import { Course } from './entities/course/course';
 import { Repository } from 'typeorm';
 import { CreateCourseDto } from './dto/create-course.dto/create-course.dto';
 import { Student } from 'src/student/entities/student/student';
+import { UpdateStudentDto } from 'src/student/dto/update-student.dto/update-student.dto';
+import { UpdateCourseDto } from './dto/update-course.dto/update-course.dto';
 
 @Injectable()
 export class CourseService {
@@ -44,10 +46,30 @@ export class CourseService {
     }
   }
 
-  async update(id: number, updateDto: Partial<Course>): Promise<Course> {
-    await this.courseRepo.update(id, updateDto);
-    return this.findOne(id); // returns updated data
+
+  async update(id: number, updateDto: UpdateCourseDto): Promise<Course> {
+    const course = await this.courseRepo.findOne({
+      where: { courseId: id },
+      relations: ['students'],
+    });
+  
+    if (!course) {
+      throw new NotFoundException(`Course with ID ${id} not found`);
+    }
+  
+    if (updateDto.courseName !== undefined) {
+      course.courseName = updateDto.courseName;
+    }
+  
+    if (updateDto.studentIds) {
+      const students = await this.studentRepo.findByIds(updateDto.studentIds);
+      course.students = students;
+    }
+  
+    return this.courseRepo.save(course);
   }
+  
+
   
   async remove(id: number) {
     const course = await this.courseRepo.findOne({

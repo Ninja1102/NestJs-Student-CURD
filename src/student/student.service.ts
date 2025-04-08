@@ -30,19 +30,25 @@ export class StudentService {
     return this.studentRepo.findOne({ where: { id }, relations: ['courses'] });
   }
   
-
-  
-
   async update(id: number, updateDto: UpdateStudentDto): Promise<Student> {
-    await this.studentRepo.update(id, updateDto);
-    const updatedStudent = await this.findOne(id);
+    const student = await this.studentRepo.findOne({ where: { id }, relations: ['courses'] });
   
-    if (!updatedStudent) {
-      throw new NotFoundException(`Student with ID ${id} not found`);
+    if (!student) {
+      throw new Error(`Student with ID ${id} not found`);
     }
   
-    return updatedStudent;
+    // If courseIds are present, update the course relationship
+    if (updateDto.courseIds) {
+      const courses = await this.courseRepo.findByIds(updateDto.courseIds);
+      student.courses = courses;
+    }
+  
+    // Update other fields
+    Object.assign(student, updateDto);
+  
+    return this.studentRepo.save(student);
   }
+  
   
   
   async remove(id: number) {

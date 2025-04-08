@@ -1,7 +1,8 @@
-import { Controller, Post, Body, Get, Param, Delete, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete, Patch, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto/create-course.dto';
 import { Course } from './entities/course/course';
+import { UpdateCourseDto } from './dto/update-course.dto/update-course.dto';
 
 @Controller('courses')
 export class CourseController {
@@ -23,10 +24,11 @@ export class CourseController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDto: Partial<Course>) {
-    return this.courseService.update(+id, updateDto);
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
+    return this.courseService.update(+id, updateCourseDto);
   }
-  
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.courseService.remove(+id);
